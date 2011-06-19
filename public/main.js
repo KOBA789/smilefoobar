@@ -52,11 +52,11 @@ var elements = {
 };
 
 var findSpace = function (myHeight, position) {
-  where = position == 'ue' ? 'top' : 'bottom';
+  cssPosition = (position == 'shita') ? 'bottom' : 'top';
   
   var myTop = 0, i = 0;
   for (i = 0; i < elements[position].length; i++) {
-    var top = Number(elements[position][i].css(where).replace('px', ''));
+    var top = Number(elements[position][i].css(cssPosition).replace('px', ''));
     var height = elements[position][i].height();
     if (myTop + myHeight <= top) {
       break;
@@ -64,7 +64,7 @@ var findSpace = function (myHeight, position) {
       myTop = height + top;
     }
   }
-  return {top: myTop, index: i, where: where};
+  return {top: myTop, index: i, cssPosition: cssPosition};
 }
 
 var deploy = function (message) {
@@ -75,7 +75,7 @@ var deploy = function (message) {
   element.css('font-size', ({big: '70', midium: '50', small: '30'})[message.attributes.size] + 'px');
   
   var property = findSpace(element.height(), message.attributes.position);
-  element.css(property.where, property.top);
+  element.css(property.cssPosition, property.top);
   element.css('width', '100%');
   elements[message.attributes.position].splice(property.index, 0, element);
   
