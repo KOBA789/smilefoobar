@@ -112,6 +112,15 @@ $(document).ready(function () {
   */
   setInterval(move, 50);
   
+  $("#send").click(function () {
+    alert(1);
+  });
+  
+  $("#post").submit(function () {
+    $("#send").click();
+    return false;
+  });
+  
   messageQueue.push({
     text: '<i>わろす</i>',
     attributes: {
