@@ -1,0 +1,100 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+
+html {
+  overflow: hidden;
+}
+
+body {
+  background-color: #666;
+}
+
+header {
+  display: block;
+  background-color: #000;
+  text-align: center;
+  height: 60px;
+  font-size: 20px;
+  line-height: 60px;
+  color: #fff;
+}
+
+#input {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	background-color: #000;
+	height: 44px;
+}
+
+input {
+  position: absolute;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #888;
+  background-color: #eee;
+  font-size: 25px;
+  height: 40px;
+  outline: none;
+}
+
+#command {
+	top: 1px;
+	left: 1px;
+	width: 170px;
+}
+
+#editor {
+	top: 1px;
+	left: 174px;
+	right: 134px;
+}
+
+#send {
+	position: absolute;
+	top: 1px;
+	right: 1px;
+	
+	background-color: #ff8000;
+	box-shadow: inset #ff7 0 15px 40px -10px, inset #ff0 0 -10px 15px -10px;
+  height: 40px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #888;
+  width: 130px;
+  font-size: 30px;
+  text-shadow: #000 2px 0 0, #000 0 2px 0, #000 -2px 0 0, #000 0 -2px 0;
+  color: #fff;
+  line-height: 40px;
+  text-align: center;
+}
+
+#send:hover {
+  background-color: #f94;
+}
+
+#send:active {
+  background-color: #ffc000;
+  box-shadow: inset #000 0 5px 40px -10px, inset #dd7000 0 23px 11px 4px;
+  line-height: 46px;
+}
+
+#display {
+  position: absolute;
+  top: 80px;
+  bottom: 44px;
+  left: 0;
+  right: 0;
+}
+
+.message {
+  position: absolute;
+  color: white;
+  font-weight: bold;
+  font-size: 50px;
+  text-shadow: #000 0 0 10px;
+  text-align: center;
+}
