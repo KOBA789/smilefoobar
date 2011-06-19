@@ -20,13 +20,13 @@ var parseCommand = function (commands) {
   
   var commandsArray = commands.split(' ');
   commandsArray.forEach(function (command) {
-    if (sizes.indexOf(command)) {
+    if (sizes.indexOf(command) != -1) {
       size = command;
     }
-    if (positions.indexOf(command)) {
+    if (positions.indexOf(command) != -1) {
       position = command;
     }
-    if (colors.indexOf(command)) {
+    if (colors.indexOf(command) != -1) {
       color = command;
     }
   });
@@ -67,39 +67,39 @@ var findSpace = function (myHeight, position) {
   return {top: myTop, index: i, cssPosition: cssPosition};
 }
 
-var deploy = function (message) {
+var deploy = function (message) {  
+  message.attributes = parseCommand([message.attributes.size, message.attributes.position, message.attributes.color].join(' '));
+  
   var element = $('<div class="message"></div>');
   element.text(message.text);
   $('#display').append(element);
   element.css('color', message.attributes.color);
   element.css('font-size', ({big: '70', midium: '50', small: '30'})[message.attributes.size] + 'px');
+  element.time = 0;
   
   var property = findSpace(element.height(), message.attributes.position);
   element.css(property.cssPosition, property.top);
   element.css('width', '100%');
   elements[message.attributes.position].splice(property.index, 0, element);
-  
-}
-
-addMessage = function (message) {
-  message.attributes = parseCommand([message.attributes.size, message.attributes.position, message.attributes.color].join(' '));
-  message.time = 0;
-  messages[message.attributes.position].push(message);
 }
 
 var move = function () {
-  var i = 0;
-  var topOffset = 0;
-  while (i < messages.ue) {
-    var message = messages[i];
-    if (message.time >= 4000) {
-      messages.shift();
-    } else {
-      message.y = topOffset;
-      i++;
+  ['ue', 'shita'].forEach(function (position) {
+    var i = 0;
+    while (i < elements[position].length) {
+      var element = elements[position][i];
+      if (element.time >= 4000) {
+        elements[position].shift().remove();
+      } else {
+        element.time += 50;
+        i++;
+      }
     }
+  });
+  
+  while (messageQueue.length > 0) {
+    deploy(messageQueue.shift());
   }
-  messageQueue.forEach(deploy);
 }
 
 $(document).ready(function () {
@@ -110,9 +110,9 @@ $(document).ready(function () {
     
   });
   */
-  //setInterval(move, 50);
+  setInterval(move, 50);
   
-  deploy({
+  messageQueue.push({
     text: '<i>わろす</i>',
     attributes: {
       size: 'midium',
@@ -121,7 +121,7 @@ $(document).ready(function () {
     }
   });
   
-  deploy({
+  messageQueue.push({
     text: '<i>わろす2</i>',
     attributes: {
       size: 'midium',
@@ -130,7 +130,7 @@ $(document).ready(function () {
     }
   });
   
-  deploy({
+  messageQueue.push({
     text: '<i>わろす3</i>',
     attributes: {
       size: 'midium',
@@ -138,9 +138,8 @@ $(document).ready(function () {
       color: 'red'
     }
   });
-  
-  elements.ue.shift().remove();
-  deploy({
+
+  messageQueue.push({
     text: '<i>わろす4</i>',
     attributes: {
       size: 'midium',
