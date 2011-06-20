@@ -40,8 +40,7 @@ var parseCommand = function (commands) {
   return attributes;
 }
 
-var displayWidth = $('#display').width();
-var displayHeight = $('#display').height();
+var displayWidth, displayHeight;
 
 var messageQueue = [];
 
@@ -64,6 +63,9 @@ var findSpace = function (myHeight, position) {
       myTop = height + top;
     }
   }
+
+  i = (position == 'naka') ? elements[position].length : i;
+  
   return {top: myTop, index: i, cssPosition: cssPosition};
 }
 
@@ -72,6 +74,7 @@ var deploy = function (message) {
   
   var element = $('<div class="message"></div>');
   element.text(message.text);
+  element.css('visibility', 'hidden');
   $('#display').append(element);
   element.css('color', message.attributes.color);
   element.css('font-size', ({big: '70', midium: '50', small: '30'})[message.attributes.size] + 'px');
@@ -79,20 +82,33 @@ var deploy = function (message) {
   
   var property = findSpace(element.height(), message.attributes.position);
   element.css(property.cssPosition, property.top);
-  element.css('width', '100%');
+  if (message.attributes.position != 'naka') {
+    element.css('text-align', 'center');
+    element.css('width', '100%');
+  }
+  console.log(property.index);
   elements[message.attributes.position].splice(property.index, 0, element);
+  //elements[message.attributes.position].push(element);
 }
 
 var move = function () {
-  ['ue', 'shita'].forEach(function (position) {
+  ['ue', 'shita', 'naka'].forEach(function (position) {
     var i = 0;
     while (i < elements[position].length) {
       var element = elements[position][i];
       if (element.time >= 4000) {
-        elements[position].shift().remove();
+        element.remove();
+        elements[position].splice(i, 1);
       } else {
-        element.time += 50;
+        if (position == 'naka') {
+          var width = element.width();
+          var distance = displayWidth + width;
+          var left = distance - distance * element.time / 4000 - width;
+          element.css('left', left + 'px');
+        }
+        element.css('visibility', 'visible');
         i++;
+        element.time += 50;
       }
     }
   });
@@ -103,6 +119,8 @@ var move = function () {
 }
 
 $(document).ready(function () {
+  displayWidth = $('#display').width();
+  displayHeight = $('#display').height();
   /*
   socket = new io.Socket();
   socket.connect();
@@ -113,47 +131,16 @@ $(document).ready(function () {
   setInterval(move, 50);
   
   $("#send").click(function () {
-    alert(1);
+    var text = $('#editor').val();
+    messageQueue.push({
+      text: text,
+      attributes: parseCommand($('#command').val())
+    });
+    $('#editor').val('');
   });
   
   $("#post").submit(function () {
     $("#send").click();
     return false;
-  });
-  
-  messageQueue.push({
-    text: '<i>わろす</i>',
-    attributes: {
-      size: 'midium',
-      position: 'shita',
-      color: 'red'
-    }
-  });
-  
-  messageQueue.push({
-    text: '<i>わろす2</i>',
-    attributes: {
-      size: 'midium',
-      position: 'ue',
-      color: 'red'
-    }
-  });
-  
-  messageQueue.push({
-    text: '<i>わろす3</i>',
-    attributes: {
-      size: 'midium',
-      position: 'ue',
-      color: 'red'
-    }
-  });
-
-  messageQueue.push({
-    text: '<i>わろす4</i>',
-    attributes: {
-      size: 'midium',
-      position: 'naka',
-      color: 'red'
-    }
   });
 });
