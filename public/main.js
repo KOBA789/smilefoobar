@@ -55,8 +55,17 @@ var findSpace = function (myHeight, position) {
   
   var myTop = 0, i = 0;
   for (i = 0; i < elements[position].length; i++) {
-    var top = Number(elements[position][i].css(cssPosition).replace('px', ''));
-    var height = elements[position][i].height();
+  	var element = elements[position][i];
+  	if (position == 'naka') {
+  		var left = Number(element.css('left').replace('px', ''));
+  		var width = Number(element.css('width').replace('px', ''));
+  		var right = left + width;
+  		if (right <= displayWidth) {
+  			continue;
+  		}
+  	}
+    var top = Number(element.css(cssPosition).replace('px', ''));
+    var height = element.height();
     if (myTop + myHeight <= top) {
       break;
     } else {
@@ -64,7 +73,7 @@ var findSpace = function (myHeight, position) {
     }
   }
 
-  i = (position == 'naka') ? elements[position].length : i;
+  //i = (position == 'naka') ? elements[position].length : i;
   
   return {top: myTop, index: i, cssPosition: cssPosition};
 }
@@ -119,20 +128,29 @@ var move = function () {
 }
 
 $(document).ready(function () {
-  displayWidth = $('#display').width();
-  displayHeight = $('#display').height();
-  /*
+  var onresize = function () {
+    displayWidth = $('#display').width();
+    displayHeight = $('#display').height();
+  }
+  onresize();
+  $(window).resize(onresize);
   socket = new io.Socket();
   socket.connect();
   socket.on('message', function(data){
-    
+    messageQueue.push(data);
   });
-  */
+  
   setInterval(move, 50);
   
   $("#send").click(function () {
     var text = $('#editor').val();
+    /*
     messageQueue.push({
+      text: text,
+      attributes: parseCommand($('#command').val())
+    });
+    */
+    socket.send({
       text: text,
       attributes: parseCommand($('#command').val())
     });
