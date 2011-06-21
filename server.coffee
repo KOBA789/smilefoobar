@@ -8,10 +8,11 @@ handler = staticResource.createHandler fs.realpathSync('./public')
 
 server = http.createServer (req, res) ->
   path = url.parse(req.url).pathname
+  path = '/index.html' if path == '/'
   if !handler.handle path, req, res
     res.writeHead 404
     res.end '404'
-server.listen 8124
+server.listen 5089
 
 socket = io.listen server
 socket.on 'connection', (client) ->

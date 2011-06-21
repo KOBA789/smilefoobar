@@ -9,12 +9,15 @@
   server = http.createServer(function(req, res) {
     var path;
     path = url.parse(req.url).pathname;
+    if (path === '/') {
+      path = '/index.html';
+    }
     if (!handler.handle(path, req, res)) {
       res.writeHead(404);
       return res.end('404');
     }
   });
-  server.listen(8124);
+  server.listen(5089);
   socket = io.listen(server);
   socket.on('connection', function(client) {
     return client.on('message', function(data) {
